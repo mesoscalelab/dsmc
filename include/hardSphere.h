@@ -1,46 +1,11 @@
-/*********************************************************************************************
- *   Copyright (c) <2018>, <Santosh Ansumali@JNCASR>                                         *
- *   All rights reserved.                                                                    *
- *   Redistribution and use in source and binary forms, with or without modification, are    *
- *   permitted provided that the following conditions are met:                               *
- *                                                                                           *
- *    1. Redistributions of source code must retain the above copyright notice, this list of *
- *       conditions and the following disclaimer.                                            *
- *    2. Redistributions in binary form must reproduce the above copyright notice, this list *
- *       of conditions and the following disclaimer in the documentation and/or other        *
- *       materials provided with the distribution.                                           *
- *    3. Neither the name of the <JNCASR> nor the names of its contributors may be used to   *
- *       endorse or promote products derived from this software without specific prior       *
- *       written permission.                                                                 *
- *                                                                                           *
- *       THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND     *
- *       ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED       *
- *       WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.  *
- *       IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT,    *
- *       INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING,      *
- *       BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,       *
- *       DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF     *
- *       LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE     *
- *       OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED   *
- *       OF THE POSSIBILITY OF SUCH DAMAGE.                                                  *
- *                                                                                           *
- *       Suggestions:          ansumali@jncasr.ac.in                                         *
- *       Bugs:                 ansumali@jncasr.ac.in                                         *
- *                                                                                           *
- *********************************************************************************************/
+// Copyright (c) 2019 Santosh Ansumali @ JNCASR
+// See LICENSE
 
-
-/*********************************************************************************************
-
- *  @Author: Akshay Chandran and Santosh Ansumali                                            *
-
- *********************************************************************************************/
-
-
-#ifndef HARDSPHERE_H_INCLUDED
-#define HARDSPHERE_H_INCLUDED
+#pragma once
 
 #include "cellList.h"
+#include <iostream>
+#include <fstream>
 
 #define gy .00001
 
@@ -62,81 +27,81 @@
 template<int DIM,typename real,typename dof>
 class hardSphere
 {
-    public:
-        hardSphere()
-        {
-            Oparticle = new particle<DIM,real,dof>;
-            Oparticle->initialiseParticle();
-            numCells = noCells;
+public:
+    hardSphere()
+    {
+        Oparticle = new particle<DIM,real,dof>;
+        Oparticle->initialiseParticle();
+        numCells = noCells;
 
-            cList = new cellList<DIM,real,dof>[numCells];
-            uWall = 0.;
-            mass = M;
-            volume = totVol;
-            deltat = deltatime;
-            height = heightZ;
-            deltaZ = deltaZed;
-            diameter = dia;
-	    extent[0] = boundBox;
-	    extent[1] = boundBox;
-	    extent[2] = height;
-        }
-        ~hardSphere()
-        {
-            //delete Oparticle;
-            //delete[] cList;
-        }
+        cList = new cellList<DIM,real,dof>[numCells];
+        uWall = 0.;
+        mass = M;
+        volume = totVol;
+        deltat = deltatime;
+        height = heightZ;
+        deltaZ = deltaZed;
+        diameter = dia;
+    extent[0] = boundBox;
+    extent[1] = boundBox;
+    extent[2] = height;
+    }
+    ~hardSphere()
+    {
+        //delete Oparticle;
+        //delete[] cList;
+    }
 
-        real totKinEnergy();
+    real totKinEnergy();
 
-        void evolveSystem();
+    void evolveSystem();
 
-        void updateVelocityBottomWall(int particleIndex, int dim);
+    void updateVelocityBottomWall(int particleIndex, int dim);
 
-        void updateVelocityTopWall(int particleIndex);
+    void updateVelocityTopWall(int particleIndex);
 
-	void applyBoundaryConditions(int,int);
+void applyBoundaryConditions(int,int);
 
-	void wallBoundary(int,int);
+void wallBoundary(int,int);
 
-        void periodicBoundary(int,int);
+    void periodicBoundary(int,int);
 
-        void clearCellParticles();
+    void clearCellParticles();
 
-        void hardSphereMain();
+    void hardSphereMain();
 
-        void initPositions();
+    void initPositions();
 
-        void initVelocity();
+    void initVelocity();
 
-        void updateCellCoord();
+    void updateCellCoord();
 
-        real gaussianRandom();
+    real gaussianRandom();
 
-        real relSpeed(int particleOne, int particleTwo);
+    real relSpeed(int particleOne, int particleTwo);
 
-        void Collision();
+    void Collision();
 
-        void processCollision(int particleOne, int particleTwo);
+    void processCollision(int particleOne, int particleTwo);
 
-        void postProcess(int it);
+    void postProcess(int it);
 
-        real getDensity(int cellNumber);
+    real getDensity(int cellNumber);
 
-    private:
-        int numCells;
-        cellList<DIM,real,dof>* cList;
-	particle<DIM,real,dof>* Oparticle;
+private:
+    int numCells;
+    cellList<DIM,real,dof>* cList;
+particle<DIM,real,dof>* Oparticle;
 
-        real uWall;
+    real uWall;
 
-        real mass;
-        real volume;
-        real deltat;
-        real height;
-        real deltaZ;
-        real diameter;
-	real extent[DIM];
+    real mass;
+    real volume;
+    real deltat;
+    real height;
+    real deltaZ;
+    real diameter;
+real extent[DIM];
 };
 
 template<int DIM,typename real,typename dof>
@@ -458,10 +423,10 @@ void hardSphere<DIM,real,dof>::hardSphereMain()
 
 		transKE = totKinEnergy();   //Kinetic Energy at any time t
 
-		cout<<"Ensemble: 5"<<endl;
-		cout<<"iteration: "<<iterations;
-		cout<<"\ntime: "<<totTime<<endl;
-		cout<<"KE ratio: "<<transKE/initKE<<endl;
+		std::cout<<"Ensemble: 5"<<std::endl;
+		std::cout<<"iteration: "<<iterations;
+		std::cout<<"\ntime: "<<totTime<<std::endl;
+		std::cout<<"KE ratio: "<<transKE/initKE<<std::endl;
 
 		if(count%10 == 0)   //updating cells every 10 steps
 		{
@@ -472,17 +437,17 @@ void hardSphere<DIM,real,dof>::hardSphereMain()
 		totTime += deltat;
 			count++;
 
-		ofstream resultAv("./results/t100k/output_100k_n10k_bb10k_ens5.csv");
+		std::ofstream resultAv("./results/t100k/output_100k_n10k_bb10k_ens5.csv");
 
 		postProcess(iterations);
 		for(int currCell = 0; currCell < numCells; currCell++)
 		{
-			for(int dim = 1; dim <= DIM; dim++)
+			for(int dim = 0; dim < DIM; dim++)
 			{
 				vCells[dim][currCell] = vCells[dim][currCell]/1.;
 			}
 
-			resultAv<<currCell<<"\t"<<vCells[1][currCell]<<endl;
+			resultAv<<currCell<<"\t"<<vCells[1][currCell]<<std::endl;
 
 			vCells[0][currCell] = 0.;
 			vCells[1][currCell] = 0.;
@@ -492,5 +457,3 @@ void hardSphere<DIM,real,dof>::hardSphereMain()
 	    iterations++;
 	}
 }
-
-#endif // HARDSPHERE_H_INCLUDED
